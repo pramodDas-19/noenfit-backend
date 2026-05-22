@@ -51,6 +51,7 @@ app.use('/api/progress', progressRoutes);
 app.use('/api/plans', planRoutes);
 
 // 7. Health checks
+app.get('/', (req, res) => res.send('NEON FIT Backend Live Version 2.0 🚀'));
 app.get('/health', (req, res) => res.json({ status: 'NEON FIT API running 🔥' }));
 app.get('/api/health', (req, res) => res.json({ status: 'NEON FIT API running 🔥' }));
 
