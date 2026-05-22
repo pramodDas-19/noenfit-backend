@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-05-21T17:00:55.814Z",
+  "userCount": 1,
+  "latestUsers": [
+    {
+      "_id": "69fa29604aed141a0886aa16",
+      "name": "Demo User",
+      "email": "demo@neonfit.com",
+      "createdAt": "2026-05-05T17:31:12.690Z"
+    }
+  ]
+}
