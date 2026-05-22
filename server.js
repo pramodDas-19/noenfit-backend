@@ -3,53 +3,56 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
+// 1. Import Routes
+// Ensure this file exists at ./routes/authRoutes.js
+const authRoutes = require('./routes/authRoutes');
+const workoutRoutes = require('./routes/workouts');
+const dietRoutes = require('./routes/diet');
+const progressRoutes = require('./routes/progress');
+const planRoutes = require('./routes/plans');
+
 const app = express();
 
-// 1. Middleware
+// 2. Middleware
 app.use(cors({ origin: '*', credentials: true }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// 2. Health Checks (TOP PRIORITY)
-app.get('/api/health', (req, res) => res.json({ status: 'Backend Working' }));
-app.get('/', (req, res) => res.send('NEON FIT Backend Live Version 7.0 🚀 - Non-auth routes disabled for debugging'));
+// 3. Health Check (Defined BEFORE any complex routing)
+app.get('/api/health', (req, res) => res.json({ status: 'Backend Working', version: '8.0' }));
+app.get('/health', (req, res) => res.json({ status: 'Backend Working', version: '8.0' }));
 
-// 3. Request logging
-app.use((req, res, next) => {
-  console.log(`[${new Date().toLocaleTimeString()}] ${req.method} ${req.url}`);
-  next();
-});
+// 4. Root Endpoint (To verify deployment)
+app.get('/', (req, res) => res.send('<h1>NEON FIT Backend Live Version 8.0 🚀</h1><p>API is running correctly.</p>'));
 
-// 4. Import & Mount Routes
-const authRoutes = require('./routes/authRoutes');
-// Temporarily disabled other routes to isolate 404 issue
-// const workoutRoutes = require('./routes/workouts');
-// const dietRoutes = require('./routes/diet');
-// const progressRoutes = require('./routes/progress');
-// const planRoutes = require('./routes/plans');
-
+// 5. Mount API Routes
+// We mount them under /api as requested
 app.use('/api/auth', authRoutes);
-// app.use('/api/workouts', workoutRoutes);
-// app.use('/api/diet', dietRoutes);
-// app.use('/api/progress', progressRoutes);
-// app.use('/api/plans', planRoutes);
+app.use('/api/workouts', workoutRoutes);
+app.use('/api/diet', dietRoutes);
+app.use('/api/progress', progressRoutes);
+app.use('/api/plans', planRoutes);
 
-// Static files
+// 6. Static files
 app.use('/uploads', express.static('uploads'));
 
-// 5. 404 Handler
+// 7. Global 404 Handler (MUST BE LAST)
 app.use((req, res) => {
-  console.log(`404 - Not Found: ${req.method} ${req.url}`);
-  res.status(404).json({ error: `Route ${req.originalUrl} not found on this server.` });
+  console.log(`404 - Not Found: ${req.method} ${req.originalUrl}`);
+  res.status(404).json({
+    error: 'Not Found',
+    path: req.originalUrl,
+    message: 'Check if you are missing the /api prefix or have a typo.'
+  });
 });
 
-// 6. Server Start
+// 8. Server Start
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 NEON FIT server running on port ${PORT}`);
 });
 
-// 7. MongoDB Connection
+// 9. MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('✅ MongoDB connected'))
   .catch(err => console.error('❌ MongoDB error:', err));
