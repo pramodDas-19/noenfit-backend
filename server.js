@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // 2. Health Checks (TOP PRIORITY)
 app.get('/api/health', (req, res) => res.json({ status: 'Backend Working' }));
-app.get('/', (req, res) => res.send('NEON FIT Backend Live Version 5.0 🚀 - Use /api for all requests'));
+app.get('/', (req, res) => res.send('NEON FIT Backend Live Version 7.0 🚀 - Non-auth routes disabled for debugging'));
 
 // 3. Request logging
 app.use((req, res, next) => {
@@ -22,16 +22,17 @@ app.use((req, res, next) => {
 
 // 4. Import & Mount Routes
 const authRoutes = require('./routes/authRoutes');
-const workoutRoutes = require('./routes/workouts');
-const dietRoutes = require('./routes/diet');
-const progressRoutes = require('./routes/progress');
-const planRoutes = require('./routes/plans');
+// Temporarily disabled other routes to isolate 404 issue
+// const workoutRoutes = require('./routes/workouts');
+// const dietRoutes = require('./routes/diet');
+// const progressRoutes = require('./routes/progress');
+// const planRoutes = require('./routes/plans');
 
 app.use('/api/auth', authRoutes);
-app.use('/api/workouts', workoutRoutes);
-app.use('/api/diet', dietRoutes);
-app.use('/api/progress', progressRoutes);
-app.use('/api/plans', planRoutes);
+// app.use('/api/workouts', workoutRoutes);
+// app.use('/api/diet', dietRoutes);
+// app.use('/api/progress', progressRoutes);
+// app.use('/api/plans', planRoutes);
 
 // Static files
 app.use('/uploads', express.static('uploads'));
